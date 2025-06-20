@@ -1,8 +1,11 @@
 module agente
 
-go 1.24.0
+go 1.24.4
 
-require github.com/oracle/oci-go-sdk/v65 v65.93.2
+require (
+	github.com/joho/godotenv v1.5.1
+	github.com/oracle/oci-go-sdk/v65 v65.93.2
+)
 
 require (
 	github.com/gofrs/flock v0.8.1 // indirect

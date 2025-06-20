@@ -20,14 +20,10 @@ func main() {
 	fmt.Println("🚀 Oracle AI Generative Agent")
 	fmt.Println("=============================")
 
-	// Configuração OCI
-	cfg := infrastructure.OCIConfig{
-		TenancyOCID: "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-		UserOCID:    "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-		KeyFile:     "private_key.pem",
-		Fingerprint: "xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx",
-		Region:      "sa-saopaulo-1",
-	}
+	// Carregar configuração OCI do arquivo .env
+	cfg := infrastructure.LoadConfig()
+	cfg.PrintConfig()
+	fmt.Println()
 
 	// Selecionar modelo interativamente
 	selectedModel := domain.SelectModelInteractively()
