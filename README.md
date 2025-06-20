@@ -315,12 +315,10 @@ go build -o agente.exe
 3. Crie implementação específica se necessário
 4. Atualize as funções de verificação de família
 
-## 📞 Suporte
+## 📚 Referência
 
 - **Documentação Oracle OCI**: https://docs.oracle.com/iaas/api/#/en/generative-ai-inference/
 - **SDK Go Oracle**: https://github.com/oracle/oci-go-sdk
 - **Generative AI**: https://docs.oracle.com/iaas/Content/generative-ai/home.htm
 
 ---
-
-**Desenvolvido com ❤️ usando Oracle Cloud Infrastructure e Go** 
