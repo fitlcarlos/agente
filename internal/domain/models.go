@@ -1,4 +1,4 @@
-package main
+package domain
 
 import (
 	"github.com/oracle/oci-go-sdk/v65/generativeaiinference"

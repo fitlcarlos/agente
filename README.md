@@ -37,18 +37,23 @@ O Oracle AI Generative Agent é uma aplicação Go que se conecta ao serviço de
 
 ```
 agente/
-├── main.go                    # Aplicação principal com sistema de múltiplas perguntas
-├── config.go                  # Configurações OCI
-├── models.go                  # Constantes e interfaces dos modelos
-├── cohere_implementation.go   # Implementação específica Cohere
-├── meta_implementation.go     # Implementação específica Meta Llama
-├── chat_session.go           # Sistema de sessões e histórico
-├── utils.go                   # Utilitários e funções auxiliares
-├── go.mod                     # Dependências Go
-├── go.sum                     # Lock das dependências
-├── agente.exe               # Executável compilado
-├── *.pem                     # Chave privada OCI
-└── README.md                 # Documentação
+├── cmd/
+│   └── agente/
+│       └── main.go              # Aplicação principal com sistema de múltiplas perguntas
+├── internal/
+│   ├── domain/                  # Lógica de negócio e domínio
+│   │   ├── models.go           # Constantes e interfaces dos modelos
+│   │   ├── chat_session.go     # Sistema de sessões e histórico
+│   │   ├── utils.go            # Utilitários e funções auxiliares
+│   │   ├── cohere_implementation.go  # Implementação específica Cohere
+│   │   └── meta_implementation.go    # Implementação específica Meta Llama
+│   └── infrastructure/          # Configurações e infraestrutura
+│       └── config.go           # Configurações OCI
+├── go.mod                      # Dependências Go
+├── go.sum                      # Lock das dependências
+├── agente.exe                  # Executável compilado
+├── *.pem                       # Chave privada OCI
+└── README.md                   # Documentação
 ```
 
 ## 🛠 Pré-requisitos
@@ -90,8 +95,8 @@ cfg := OCIConfig{
 # Baixar dependências
 go mod download
 
-# Compilar o projeto
-go build -o agente.exe
+# Compilar o projeto (usa cmd/agente como entry point)
+go build -o agente.exe ./cmd/agente
 ```
 
 ## 🚀 Execução
@@ -245,30 +250,31 @@ require (
 )
 ```
 
-## 🏗️ Arquitetura
+## 🏗️ Arquitetura e Padrões
 
-### Interface `ModelImplementation`
-Cada família de modelo implementa esta interface:
-- `CreateChatRequest()` - Cria requisição específica
-- `ProcessResponse()` - Processa resposta específica  
-- `GetModelFamily()` - Retorna família do modelo
+O projeto segue a **estrutura padrão do Go** para melhor organização e manutenibilidade:
 
-### Sistema de Sessões
-- **ChatSession** - Gerencia sessão com histórico completo
-- **Question** - Representa pergunta individual com métricas
-- **SessionStats** - Estatísticas calculadas da sessão
+### 📁 Organização dos Diretórios
 
-### Factory Pattern
-- `CreateModelImplementation()` - Cria implementação baseada no modelo
-- `GetModelFamily()` - Determina família do modelo automaticamente
+- **`cmd/agente/`** - Contém o ponto de entrada da aplicação (main.go)
+- **`internal/domain/`** - Lógica de negócio, modelos e implementações específicas
+- **`internal/infrastructure/`** - Configurações, integrações externas e infraestrutura
+- **Raiz do projeto** - Arquivos de configuração (go.mod, README.md, etc.)
 
-### Modularidade
-- **main.go**: Aplicação principal e controle de sessão
-- **chat_session.go**: Sistema de histórico e estatísticas
-- **models.go**: Constantes e interfaces
-- **cohere_implementation.go**: Lógica específica Cohere
-- **meta_implementation.go**: Lógica específica Meta Llama
-- **utils.go**: Funções auxiliares e utilitários
+### ✨ Benefícios desta Estrutura
+
+- **🔒 Encapsulamento**: Código em `internal/` não pode ser importado por outros projetos
+- **📦 Modularidade**: SeparaçÃo clara entre domínio e infraestrutura
+- **🔧 Manutenibilidade**: Facilita mudanças e adição de novas funcionalidades
+- **📚 Padrão Go**: Segue as convenções estabelecidas pela comunidade Go
+- **🎯 Testabilidade**: Estrutura favorece criação de testes unitários
+
+### 🔗 Dependências entre Módulos
+
+```
+cmd/agente → internal/domain + internal/infrastructure
+internal/domain ← internal/infrastructure
+```
 
 ## 🔍 Resolução de Problemas
 
@@ -301,7 +307,7 @@ go build -o agente.exe
 - [ ] **Configuração via arquivo**: Carregar credenciais de arquivo config
 - [ ] **Cache de respostas**: Sistema de cache para otimização
 - [ ] **Troca de modelo em tempo real**: Mudar modelo durante a sessão
-- [x] **Contexto entre perguntas**: Manter contexto da conversa
+- [x] **Contexto entre perguntas**: ✅ Manter contexto da conversa
 - [ ] **Exportar histórico**: Salvar conversas em arquivo
 - [ ] **Interface web**: Criar interface web para facilitar uso
 - [ ] **Logs detalhados**: Sistema de logging mais robusto

@@ -1,4 +1,4 @@
-module AIOracle
+module agente
 
 go 1.24.0
 

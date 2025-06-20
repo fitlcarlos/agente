@@ -11,6 +11,9 @@ import (
 
 	"github.com/oracle/oci-go-sdk/v65/common"
 	"github.com/oracle/oci-go-sdk/v65/generativeaiinference"
+
+	"agente/internal/domain"
+	"agente/internal/infrastructure"
 )
 
 func main() {
@@ -18,7 +21,7 @@ func main() {
 	fmt.Println("=============================")
 
 	// Configuração OCI
-	cfg := OCIConfig{
+	cfg := infrastructure.OCIConfig{
 		TenancyOCID: "ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 		UserOCID:    "ocid1.user.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 		KeyFile:     "private_key.pem",
@@ -27,15 +30,15 @@ func main() {
 	}
 
 	// Selecionar modelo interativamente
-	selectedModel := SelectModelInteractively()
+	selectedModel := domain.SelectModelInteractively()
 
 	// Validar se o modelo é suportado
-	if !IsModelSupported(selectedModel) {
+	if !domain.IsModelSupported(selectedModel) {
 		log.Fatalf("Modelo não suportado: %s", selectedModel)
 	}
 
 	// Obter informações do modelo
-	description, family, _ := GetModelInfo(selectedModel)
+	description, family, _ := domain.GetModelInfo(selectedModel)
 	fmt.Printf("Usando modelo: %s (%s)\n", description, family)
 	fmt.Printf("Família: %s\n\n", family)
 
@@ -49,19 +52,19 @@ func main() {
 	}
 
 	// Criar implementação específica do modelo
-	modelImpl := CreateModelImplementation(selectedModel)
+	modelImpl := domain.CreateModelImplementation(selectedModel)
 	if modelImpl == nil {
 		log.Fatalf("Implementação não encontrada para o modelo: %s", selectedModel)
 	}
 
 	// Criar sessão de chat
-	session := NewChatSession(selectedModel, description)
+	session := domain.NewChatSession(selectedModel, description)
 
 	// Iniciar sessão de múltiplas perguntas
 	startChatSession(client, modelImpl, cfg, selectedModel, description, session)
 }
 
-func startChatSession(client generativeaiinference.GenerativeAiInferenceClient, modelImpl ModelImplementation, cfg OCIConfig, selectedModel, description string, session *ChatSession) {
+func startChatSession(client generativeaiinference.GenerativeAiInferenceClient, modelImpl domain.ModelImplementation, cfg infrastructure.OCIConfig, selectedModel, description string, session *domain.ChatSession) {
 	reader := bufio.NewReader(os.Stdin)
 
 	// Exibir instruções
@@ -139,7 +142,7 @@ func startChatSession(client generativeaiinference.GenerativeAiInferenceClient, 
 	}
 }
 
-func processQuestion(client generativeaiinference.GenerativeAiInferenceClient, modelImpl ModelImplementation, cfg OCIConfig, selectedModel, description, inputText string, session *ChatSession) {
+func processQuestion(client generativeaiinference.GenerativeAiInferenceClient, modelImpl domain.ModelImplementation, cfg infrastructure.OCIConfig, selectedModel, description, inputText string, session *domain.ChatSession) {
 	questionNumber := len(session.Questions) + 1
 	fmt.Printf("🤔 Processando pergunta %d...\n", questionNumber)
 
@@ -324,7 +327,7 @@ func clearScreen() {
 	fmt.Print("\033[2J\033[H")
 }
 
-func createProvider(cfg OCIConfig) common.ConfigurationProvider {
+func createProvider(cfg infrastructure.OCIConfig) common.ConfigurationProvider {
 	// Ler o conteúdo do arquivo PEM
 	privateKeyContent, err := os.ReadFile(cfg.KeyFile)
 	if err != nil {
