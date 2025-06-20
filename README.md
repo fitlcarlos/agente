@@ -36,7 +36,7 @@ O Oracle AI Generative Agent é uma aplicação Go que se conecta ao serviço de
 ## 📦 Estrutura do Projeto
 
 ```
-agente2/
+agente/
 ├── main.go                    # Aplicação principal com sistema de múltiplas perguntas
 ├── config.go                  # Configurações OCI
 ├── models.go                  # Constantes e interfaces dos modelos
@@ -46,7 +46,7 @@ agente2/
 ├── utils.go                   # Utilitários e funções auxiliares
 ├── go.mod                     # Dependências Go
 ├── go.sum                     # Lock das dependências
-├── agente2.exe               # Executável compilado
+├── agente.exe               # Executável compilado
 ├── *.pem                     # Chave privada OCI
 └── README.md                 # Documentação
 ```
@@ -91,7 +91,7 @@ cfg := OCIConfig{
 go mod download
 
 # Compilar o projeto
-go build -o agente2.exe
+go build -o agente.exe
 ```
 
 ## 🚀 Execução
@@ -106,7 +106,7 @@ go build -o agente2.exe
 
 ### 🎯 Fluxo Principal
 
-1. **Execute o programa**: `./agente2.exe`
+1. **Execute o programa**: `./agente.exe`
 2. **Escolha um modelo**: Selecione entre os 7 modelos disponíveis
 3. **Inicie a sessão**: Faça múltiplas perguntas na mesma sessão
 4. **Use comandos especiais**: Controle avançado da sessão
